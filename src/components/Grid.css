@@ -1,0 +1,18 @@
+#grid {
+    display: grid;
+    grid-template-columns: repeat(var(--columnsCount), 1fr);
+    gap: 10px;
+
+    > div {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        border: 1px white solid;
+        border-radius: 5px;
+    }
+
+    b {
+        font-size: 1.2rem;
+    }
+}
