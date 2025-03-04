@@ -14,14 +14,16 @@ function List() {
         </tr>
       </thead>
       <tbody>
-        {data.map(({ id, title, price, description }, index) => (
-          <tr key={id}>
-            <td>{index}</td>
-            <td>{title}</td>
-            <td>{price}</td>
-            <td>{description}</td>
-          </tr>
-        ))}
+        {Array.isArray(data) &&
+          data.length !== 0 &&
+          data.map(({ id, title, price, description }, index) => (
+            <tr key={id}>
+              <td>{index}</td>
+              <td>{title}</td>
+              <td>{price}</td>
+              <td>{description}</td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );

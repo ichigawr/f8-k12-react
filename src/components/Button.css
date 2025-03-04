@@ -1,5 +1,8 @@
 button {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100px;
-    margin: 20px;
     background-color: deepskyblue;
 }
