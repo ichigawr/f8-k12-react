@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+let isSearching = false;
+let timeId;
+
 const getPosts = async (limit = 25, page = 1) => {
   try {
+    const skip = (page - 1) * limit;
     const res = await fetch(
-      `https://dummyjson.com/posts?limit=${limit}&skip=${(page - 1) * limit}`,
+      `https://dummyjson.com/posts?limit=${limit}&skip=${skip}`,
       {
         method: "GET",
       }
@@ -28,17 +32,20 @@ const searchPost = async (query) => {
   }
 };
 
-let isSearching = false;
-
 function App() {
-  const [page, setPage] = useState(1);
+  const paramObj = new URLSearchParams(location.search);
+
+  const [page, setPage] = useState(Number(paramObj.get("page")) || 1);
   const [posts, setPosts] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [limit, setLimit] = useState(25);
+
   let startPage = Math.max(page - 3, 0);
   const endPage = Math.min(startPage + 5, totalPages);
   startPage = Math.max(endPage - 5, 0);
+
+  useEffect(() => history.replaceState(null, null, `?page=${page}`), [page]);
 
   useEffect(() => {
     (async () => {
@@ -50,23 +57,48 @@ function App() {
     })();
   }, [limit, page]);
 
-  const handleChange = (e) => {
+  const handleLimitChange = (e) => {
     setLimit(e.target.value);
     setPage(1);
   };
 
-  const handleSearch = async (e) => {
-    const query = e.target.value.trim();
+  const handlePageInputChange = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    if (Number(e.target.value) > totalPages) e.target.value = totalPages;
+    else if (e.target.value !== "" && Number(e.target.value) < 1)
+      e.target.value = 1;
+  };
 
-    if (query !== "" && query.length < 3) return;
+  const handleKeyDown = (e) => {
+    if (
+      e.key === "Enter" &&
+      e.target.value !== "" &&
+      Number(e.target.value) !== page
+    ) {
+      const newPage = Number(e.target.value) || 1;
+      setPage(newPage);
+    }
+  };
 
-    if (query === "") isSearching = false;
-    else isSearching = true;
+  const handleSearch = (e) => {
+    clearTimeout(timeId);
+    timeId = setTimeout(async () => {
+      const query = e.target.value.trim();
 
-    const data =
-      query !== "" ? await searchPost(query) : await getPosts(limit, page);
-    setPosts(data.posts);
-    setTotalPages(Math.ceil(data.total / limit));
+      if (query !== "" && query.length < 3) return;
+
+      if (query === "") isSearching = false;
+      else isSearching = true;
+
+      setIsLoading(true);
+
+      const data =
+        query !== "" ? await searchPost(query) : await getPosts(limit, page);
+      setPosts(data.posts);
+      setTotalPages(Math.ceil(data.total / limit));
+
+      setIsLoading(false);
+    }, 500);
   };
 
   return (
@@ -103,9 +135,15 @@ function App() {
             <p>{body}</p>
 
             <div className="post-meta">
-              <span className="views">👀 {views} lượt xem</span>
-              <span className="likes">👍 {reactions.likes}</span>
-              <span className="dislikes">👎 {reactions.dislikes}</span>
+              <span className="views">
+                👀 {views.toLocaleString()} lượt xem
+              </span>
+              <span className="likes">
+                👍 {reactions.likes.toLocaleString()}
+              </span>
+              <span className="dislikes">
+                👎 {reactions.dislikes.toLocaleString()}
+              </span>
             </div>
 
             <div className="tags">
@@ -127,7 +165,7 @@ function App() {
             <select
               id="records"
               className="records-select"
-              onChange={handleChange}
+              onChange={handleLimitChange}
             >
               <option value="25">25</option>
               <option value="50">50</option>
@@ -137,12 +175,30 @@ function App() {
           </div>
 
           <div className="pagination">
+            <label id="page-input">
+              <input
+                type="text"
+                onChange={handlePageInputChange}
+                onKeyDown={handleKeyDown}
+                style={{ "--charWidth": String(totalPages).length + "ch" }}
+              />
+              <span> / {totalPages}</span>
+            </label>
+
+            <button
+              className="page-btn prev"
+              disabled={page == 1}
+              onClick={() => setPage(1)}
+            >
+              ««
+            </button>
+
             <button
               className="page-btn prev"
               disabled={page == 1}
               onClick={() => setPage(page - 1)}
             >
-              « Trước
+              «
             </button>
 
             {[...Array(totalPages).keys()]
@@ -162,7 +218,15 @@ function App() {
               disabled={page == totalPages}
               onClick={() => setPage(page + 1)}
             >
-              Sau »
+              »
+            </button>
+
+            <button
+              className="page-btn next"
+              disabled={page == totalPages}
+              onClick={() => setPage(totalPages)}
+            >
+              »»
             </button>
           </div>
         </div>
