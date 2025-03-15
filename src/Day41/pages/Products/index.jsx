@@ -4,16 +4,13 @@ import { useState, useEffect } from "react";
 
 const getProducts = async (params) => {
   try {
-    const res = await fetch(
-      `https://api01.f8team.dev/api/products?${params}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    );
+    const res = await fetch(`https://api01.f8team.dev/api/products?${params}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
     const data = await res.json();
     return data;
   } catch (error) {
@@ -27,7 +24,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(Number(params.get("per_page")) || 10);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -67,7 +64,7 @@ const Products = () => {
       {isLoading && <Loading />}
 
       {/* TODO: fix UI bug */}
-      {!isLoading && !products.length && (
+      {!isLoading && products.length === 0 && (
         <p className="empty-message">Không có sản phẩm nào.</p>
       )}
     </div>

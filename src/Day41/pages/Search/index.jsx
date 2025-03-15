@@ -31,7 +31,7 @@ const Search = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(Number(params.get("per_page")) || 10);
   const [searchInput, setSearchInput] = useState(params.get("q") || "");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
