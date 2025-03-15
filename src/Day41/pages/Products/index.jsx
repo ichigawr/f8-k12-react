@@ -57,13 +57,13 @@ const Products = () => {
           setPage={setPage}
           products={products}
           totalPages={totalPages}
+          limit={limit}
           setLimit={setLimit}
         />
       )}
 
       {isLoading && <Loading />}
 
-      {/* TODO: fix UI bug */}
       {!isLoading && products.length === 0 && (
         <p className="empty-message">Không có sản phẩm nào.</p>
       )}

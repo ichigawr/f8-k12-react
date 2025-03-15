@@ -1,6 +1,6 @@
 import "./ProductList.css";
 
-function ProductList({ page, setPage, products, totalPages, setLimit }) {
+function ProductList({ page, setPage, products, totalPages, limit, setLimit }) {
   let startPage = Math.max(page - 3, 0);
   const endPage = Math.min(startPage + 5, totalPages);
   startPage = Math.max(endPage - 5, 0);
@@ -31,6 +31,7 @@ function ProductList({ page, setPage, products, totalPages, setLimit }) {
           <select
             id="itemsPerPage"
             className="items-select"
+            value={limit}
             onChange={handleSelect}
           >
             <option value="10">10</option>
