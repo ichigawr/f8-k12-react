@@ -35,20 +35,6 @@ const Search = () => {
 
   useEffect(() => {
     (async () => {
-      setIsLoading(true);
-
-      if (params.get("q") !== "") {
-        const productData = await searchProducts(params);
-        setProducts(productData.data);
-        setTotalPages(Math.ceil(productData.total / limit));
-      }
-
-      setIsLoading(false);
-    })();
-  }, [page, limit, params]);
-
-  useEffect(() => {
-    (async () => {
       if (params.get("q") !== searchInput) {
         params.set("q", searchInput);
       }
@@ -64,6 +50,20 @@ const Search = () => {
       history.replaceState(null, null, `?${params}`);
     })();
   }, [searchInput, page, limit, params, setIsLoading]);
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+
+      if (params.get("q") !== "") {
+        const productData = await searchProducts(params);
+        setProducts(productData.data);
+        setTotalPages(Math.ceil(productData.total / limit));
+      }
+
+      setIsLoading(false);
+    })();
+  }, [page, limit, params]);
 
   const handleSearch = (e) => {
     setSearchInput(e.target.value);
@@ -110,7 +110,6 @@ const Search = () => {
 
       {isLoading && <Loading />}
 
-      {/* TODO: fix UI bug */}
       {!isLoading && !products.length && (
         <p className="empty-message">Không có sản phẩm nào.</p>
       )}
