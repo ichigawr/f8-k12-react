@@ -42,7 +42,7 @@ const Products = () => {
 
       const productData = await getProducts(params);
       setProducts(productData.data);
-      setTotalPages(Math.ceil(productData.total / limit));
+      setTotalPages(productData.last_page);
 
       setIsLoading(false);
     })();
