@@ -6,7 +6,7 @@ function ProductList({ page, setPage, products, totalPages, limit, setLimit }) {
   startPage = Math.max(endPage - 5, 0);
 
   const handleSelect = (e) => {
-    setLimit(e.target.value);
+    setLimit(Number(e.target.value));
     setPage(1);
   };
 
