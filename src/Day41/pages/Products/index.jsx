@@ -48,17 +48,26 @@ const Products = () => {
     })();
   }, [page, limit, setIsLoading, params]);
 
+  const handleSelect = (e) => {
+    setLimit(Number(e.target.value));
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   return (
     <div className="page-container">
       <h1 className="page-title">Danh Sách Sản Phẩm</h1>
       {products.length > 0 && (
         <ProductList
           page={page}
-          setPage={setPage}
           products={products}
           totalPages={totalPages}
           limit={limit}
-          setLimit={setLimit}
+          handleSelect={handleSelect}
+          handlePageChange={handlePageChange}
         />
       )}
 

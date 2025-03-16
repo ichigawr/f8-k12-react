@@ -83,6 +83,15 @@ const Search = () => {
     }, 500);
   };
 
+  const handleSelect = (e) => {
+    setLimit(Number(e.target.value));
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   return (
     <div className="page-container">
       <h1 className="search-title">Tìm kiếm sản phẩm</h1>
@@ -101,10 +110,11 @@ const Search = () => {
       {products.length > 0 && (
         <ProductList
           page={page}
-          setPage={setPage}
           products={products}
           totalPages={totalPages}
-          setLimit={setLimit}
+          limit={limit}
+          handleSelect={handleSelect}
+          handlePageChange={handlePageChange}
         />
       )}
 

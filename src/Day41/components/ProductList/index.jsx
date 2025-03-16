@@ -1,14 +1,17 @@
+import PropTypes from "prop-types";
 import "./ProductList.css";
 
-function ProductList({ page, setPage, products, totalPages, limit, setLimit }) {
+function ProductList({
+  page,
+  products,
+  totalPages,
+  limit,
+  handleSelect,
+  handlePageChange,
+}) {
   let startPage = Math.max(page - 3, 0);
   const endPage = Math.min(startPage + 5, totalPages);
   startPage = Math.max(endPage - 5, 0);
-
-  const handleSelect = (e) => {
-    setLimit(Number(e.target.value));
-    setPage(1);
-  };
 
   return (
     <div className="product-list-container">
@@ -45,7 +48,7 @@ function ProductList({ page, setPage, products, totalPages, limit, setLimit }) {
           <button
             className="page-button"
             disabled={page == 1}
-            onClick={() => setPage(page - 1)}
+            onClick={() => handlePageChange(page - 1)}
           >
             ⬅ Trước
           </button>
@@ -59,7 +62,9 @@ function ProductList({ page, setPage, products, totalPages, limit, setLimit }) {
                   className={`page-number ${
                     page === index + 1 ? "active" : ""
                   }`}
-                  onClick={() => page !== index + 1 && setPage(index + 1)}
+                  onClick={() =>
+                    page !== index + 1 && handlePageChange(index + 1)
+                  }
                 >
                   {index + 1}
                 </button>
@@ -69,7 +74,7 @@ function ProductList({ page, setPage, products, totalPages, limit, setLimit }) {
           <button
             className="page-button"
             disabled={page == totalPages}
-            onClick={() => setPage(page + 1)}
+            onClick={() => handlePageChange(page + 1)}
           >
             Tiếp ➡
           </button>
@@ -78,5 +83,14 @@ function ProductList({ page, setPage, products, totalPages, limit, setLimit }) {
     </div>
   );
 }
+
+ProductList.propTypes = {
+  page: PropTypes.number.isRequired,
+  products: PropTypes.array.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
+  handleSelect: PropTypes.func.isRequired,
+  handlePageChange: PropTypes.func.isRequired,
+};
 
 export default ProductList;
